@@ -6,6 +6,7 @@ module T = struct
     type prices = (symbol, nat) map
     type trades = (symbol * nat) list
     type pools = (symbol, address) map
+    type balances = (symbol, nat) map
 
     type side =
 	| Buy
@@ -14,6 +15,7 @@ module T = struct
     type swap =
     [@layout:comb]
     {
+	symbol : symbol;
 	pool : address;
 	side : side;
 	amt : nat;
@@ -32,8 +34,9 @@ module T = struct
 	| Rebalance of prices
 
     type storage = {
-	portfolios: (address, portfolio) map;
-	pools: pools;
+	portfolios : (address, portfolio) map;
+	pools : pools;
+	balances : balances; 
     }
 
 end

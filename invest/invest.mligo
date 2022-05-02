@@ -77,7 +77,7 @@ let make_sell_swaps (sells, prices, pools : T.trades * T.prices * T.pools) : T.s
 	let price = UTILS.get_val prices symbol in
 	let pool_addr = UTILS.get_val pools symbol in
 	let min_out = UTILS.to_nat ((amt * price) * (1000n - slippage) / 1000n) in
-	{ pool = pool_addr; side = Sell; amt = amt; min_out = min_out } in
+	{ symbol = symbol; pool = pool_addr; side = Sell; amt = amt; min_out = min_out } in
 
     List.map make_swap sells
 
@@ -91,7 +91,7 @@ let make_buy_swaps (buys, tz_limit, prices, pools : T.trades * nat * T.prices * 
 	    if amt * price < tz_limit
 	    then amt * price
 	    else tz_limit in
-	let swap = { pool = pool_addr; side = Buy; amt = tz_amt; min_out = min_out } in
+	let swap = { symbol = symbol; pool = pool_addr; side = Buy; amt = tz_amt; min_out = min_out } in
 	(UTILS.to_nat (tz_limit - tz_amt), swap :: swaps) in
 
     let _, swaps = List.fold make_swap buys (tz_limit, ([] : T.swap list)) in
@@ -108,6 +108,20 @@ let do_swaps (swaps : T.swap list) : operation list =
 	swaps
 
 
+let update_balances (swaps, balances : T.swap list * T.balances) =
+    List.fold
+	(fun (balances, swap : T.balances * T.swap) ->
+	    let old_amt = match Map.find_opt swap.symbol balances with
+	    | Some value -> value
+	    | None -> 0n in
+	    let new_amt = match swap.side with
+	    | Buy -> old_amt + swap.min_out
+	    | Sell -> UTILS.to_nat (old_amt - swap.min_out) in
+	    Map.add swap.symbol new_amt balances)
+	swaps
+	balances
+
+
 let rebalance(prices, storage : T.prices * T.storage) =
     let portfolio = match Map.find_opt Tezos.sender storage.portfolios with
     | None -> failwith "Portfolio not found"
@@ -120,7 +134,8 @@ let rebalance(prices, storage : T.prices * T.storage) =
     let tz_limit = Tezos.amount / 1mutez + min_tz_out in
     let buy_swaps = make_buy_swaps (buys, tz_limit, prices, storage.pools) in
     let all_swaps = UTILS.concat (sell_swaps, buy_swaps) in
-    (* let balances = update_balances (all_swaps, storage.balances) in *)
+    let balances = update_balances (all_swaps, storage.balances) in
+    let assets = update_balances (all_swaps, portfolio.assets) in
     let ops = do_swaps all_swaps in
     ops, storage
 
