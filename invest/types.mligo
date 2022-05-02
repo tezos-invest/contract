@@ -29,13 +29,20 @@ module T = struct
 	assets : assets;
     }
 
+    type rebalance_params =
+    [@layout:comb]
+    {
+	prices : prices;
+	pools : pools;
+	slippage : nat;
+    }
+
     type invest_entrypoints =
 	| Create_portfolio of weights
-	| Rebalance of prices
+	| Rebalance of rebalance_params
 
     type storage = {
-	portfolios : (address, portfolio) map;
-	pools : pools;
+	portfolios : (address, portfolio) big_map;
 	balances : balances; 
     }
 

@@ -2,11 +2,11 @@
 ### Compile
 
 ```bash
-ligo compile contract options/main.mligo -p hangzhou -e main -o options.tz
+ligo compile contract invest/main.mligo --werror -p hangzhou -e main -o invest.tz
 ```
 
 ### Run tests
 
 ```bash
-ligo run test -p hangzhou tests/test_options.mligo
+ligo run test -p hangzhou tests/test_invest.mligo
 ```
