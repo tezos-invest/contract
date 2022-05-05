@@ -1,11 +1,9 @@
 import os
 import json
-import datetime as dt
 
 import dotenv
 from pytezos import ContractInterface, pytezos
 from pytezos.client import PyTezosClient
-from pytezos.operation.content import format_tez
 
 
 dotenv.load_dotenv()
@@ -31,27 +29,15 @@ metadata = json.dumps(
 )
 
 
-def to_hex(string):
-    return string.encode().hex()
-
-
 if __name__ == "__main__":
     client: PyTezosClient = pytezos.using(key=KEY_FILENAME, shell=SHELL)
     contract = ContractInterface.from_file(CONTRACT_FILENAME).using(
         key=KEY_FILENAME, shell=SHELL
     )
 
-    # If key hasn't been used before, activate key:
-    check_active = False
-    if check_active and client.balance() < 1e-5:
-        print("Activating account...")
-        op = client.activate_account().send()
-        client.wait(op)
-
-        op = client.reveal().send()
-        client.wait(op)
-
     initial_storage = {
+        "admin": "tz1LQjdKgiAsHkYMzBH2HFDcynf7QSd5Z4Eg",
+        "pending_admin": None,
         "portfolios": {},
         "balances": {},
         "is_paused": False,
@@ -71,4 +57,4 @@ if __name__ == "__main__":
     op_result = opg["contents"][0]["metadata"]["operation_result"]
     address = op_result["originated_contracts"][0]
     print(f"Contract address: {address}")
-    # Contract address: KT1Cp8LZFYmoojefq7yvk1HaDPvsnERQevxN
+    # Contract address: KT1UxDNfsbkexUSP7NyrRVSBSsSWMoYPmPrf

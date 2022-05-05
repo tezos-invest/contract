@@ -56,4 +56,12 @@ let approve (token_addr, spender, value : address * address * nat) =
     Tezos.transaction { spender = spender ; value = value } 0mutez contract
 
 
+let transfer_tz (amt, to : tez * address) =
+    let to_contract : unit contract =
+        match (Tezos.get_contract_opt to : unit contract option) with
+	    | None -> (failwith "Invalid contract" : unit contract)
+	    | Some c -> c in
+    Tezos.transaction () amt to_contract
+
+
 #endif

@@ -110,7 +110,16 @@ module T = struct
 	| Fa12_get_balance_callback of nat
 	| Fa2_balance_of_callback of fa2_balance_of_response list
 
+    type admin_entrypoints =
+	| Set_admin of address
+	| Confirm_admin
+	| Pause of bool
+	| Set_delegate of key_hash option
+	| Withdraw_rewards of address
+
     type storage = {
+	admin : address;
+	pending_admin : address option;
 	portfolios : (address, portfolio) big_map;
 	balances : balances; 
 	is_paused : bool; 

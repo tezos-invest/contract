@@ -119,7 +119,7 @@ let do_swaps (swaps : T.swap list) : operation list =
             then ops
             else match swap.side with
                 | Buy ->
-                    let op = QUIPU.token_to_tez (swap.pool, swap.amt, swap.min_out, swap.receiver) in
+                    let op = QUIPU.tez_to_token (swap.pool, swap.amt, swap.min_out, swap.receiver) in
                     op :: ops
                 | Sell -> 
                     let op = QUIPU.token_to_tez (swap.pool, swap.amt, swap.min_out, swap.receiver) in
@@ -214,8 +214,8 @@ let callback(param, storage : T.callback_entrypoints * T.storage) =
     let token, bal = match param with
     | Fa12_get_balance_callback value -> (Fa12 Tezos.sender), value
     | Fa2_balance_of_callback responses ->
-	let response = Option.unopt (List.head_opt responses) in
-	Fa2 (Tezos.sender, response.request.token_id), response.balance in
+        let response = Option.unopt (List.head_opt responses) in
+        Fa2 (Tezos.sender, response.request.token_id), response.balance in
 
     let symbol = Option.unopt (Map.find_opt token storage.pending_requests) in
     let pending_requests = Map.remove token storage.pending_requests in
@@ -237,23 +237,25 @@ let callback(param, storage : T.callback_entrypoints * T.storage) =
         ; amt = amt_to_sell
         ; min_out = 1n
         ; receiver = withdrawal_address } in
-    let ops = do_swaps [ swap ]  in
+    let ops = do_swaps [ swap ] in
+    let balances = update_balances ([ swap ], storage.balances) in
 
     let is_last = (Map.size pending_requests) = 0n in
+    let storage = {
+        storage with
+        balances = balances ;
+        pending_requests = pending_requests ;
+    } in
     let storage =
         if is_last
         then { 
             storage with
             is_paused = false ;
             portfolios = Big_map.remove withdrawal_address storage.portfolios ;
-            pending_requests = pending_requests ;
             withdrawal_address = (None : address option) ;
             pools = (Map.empty : T.pools)
         }
-        else {
-            storage with
-            pending_requests = pending_requests
-        } in
+        else storage in
     ops, storage
 
 
@@ -262,29 +264,6 @@ let main(param, storage : T.invest_entrypoints * T.storage) =
     | Create_portfolio { weights ; tokens } -> create_portfolio (weights, tokens, storage)
     | Rebalance { prices ; pools ; slippage } -> rebalance (prices, pools, slippage, storage)
     | Withdraw pools -> withdraw (pools, storage)
-
-
-(*
-
-let weights = Map.literal [("RCT", 25n); ("FA12", 10n); ("TS", 65n)]
-let prices = Map.literal [("TS", 98650n); ("RCT", 235606n); ("FA12", 1794313n)]
-let assets = Map.literal [("RCT", 0n); ("FA12", 0n); ("TS", 0n)]
-
-let assets = Map.literal [("BTC", 1250n); ("ETH", 2700n); ("XTZ", 550n)]
-let prices = Map.literal [("BTC", 35000n); ("ETH", 2000n); ("XTZ", 4n)]
-let prices2 = Map.literal [("BTC", 25000n); ("ETH", 2500n); ("XTZ", 5n)]
-let weights = Map.literal [("BTC", 34n); ("ETH", 33n); ("XTZ", 33n)]
-let assets = allocate (weights, prices, 100000000n)
-let assets2 = allocate (weights, prices2, 100000000n)
-let sells, buys = calculate_trades (assets, assets2)
-let pools = Map.literal [
-    ("BTC", ("KT1PMQZxQTrFPJn3pEaj9rvGfJA9Hvx7Z1CL" : address));
-    ("ETH", ("KT1PMQZxQTrFPJn3pEaj9rvGfJA9Hvx7Z1CL" : address));
-    ("XTZ", ("KT1PMQZxQTrFPJn3pEaj9rvGfJA9Hvx7Z1CL" : address));
-]
-let sell_swaps = make_sell_swaps (sells, prices, pools)
-let buy_swaps = make_buy_swaps (buys, 20000000n, prices, pools)
-*)
 
 
 #endif
