@@ -4,6 +4,7 @@
 #include "types.mligo"
 #import "utils.mligo" "UTILS"
 
+
 let confirm_new_admin (storage : T.storage) =
     match storage.pending_admin with
     | None -> (failwith "NO_PENDING_ADMIN" : T.storage)
@@ -37,7 +38,7 @@ let main(param, storage : T.admin_entrypoints * T.storage) =
 	  let storage = set_admin (new_admin, storage) in
 	  ([] : operation list), storage
 
-    | Confirm_admin _ ->
+    | Confirm_admin ->
 	  let storage = confirm_new_admin storage in
 	  ([]: operation list), storage
 

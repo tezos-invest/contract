@@ -40,28 +40,24 @@ module T = struct
     }
 
     type fa12_get_balance_param =
-    [@layout:comb]
     {
 	owner : address;
 	callback : nat contract;
     }
 
     type fa2_balance_of_request =
-    [@layout:comb]
     {
       owner : address;
       token_id : token_id;
     }
 
     type fa2_balance_of_response =
-    [@layout:comb]
     {
       request : fa2_balance_of_request;
       balance : nat;
     }
 
     type fa2_balance_of_param =
-    [@layout:comb]
     {
       requests : fa2_balance_of_request list;
       callback : (fa2_balance_of_response list) contract;
