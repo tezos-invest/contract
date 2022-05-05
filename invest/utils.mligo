@@ -22,5 +22,38 @@ let rec concat (type a) (xs, ys : a list * a list) : a list =
     | [] -> ys
 
 
+let query_balance (token, owner : T.token * address) =
+    match token with
+    | Fa12 addr -> 
+	let callback = Option.unopt
+	    (Tezos.get_entrypoint_opt "%fa12_get_balance_callback" Tezos.self_address : nat contract option) in 
+	let contract = Option.unopt
+	    (Tezos.get_entrypoint_opt "%getBalance" addr : T.fa12_get_balance_param contract option) in
+	Tezos.transaction { owner = owner ; callback = callback } 0mutez contract
+    | Fa2 (addr, token_id) ->
+	let callback = Option.unopt
+	    (Tezos.get_entrypoint_opt "%fa2_balance_of_callback" Tezos.self_address : T.fa2_balance_of_response list contract option) in 
+	let contract = Option.unopt
+	    (Tezos.get_entrypoint_opt "%balance_of" addr : T.fa2_balance_of_param contract option) in
+	Tezos.transaction { requests = [{ owner = owner ; token_id = token_id }] ; callback = callback } 0mutez contract
+
+
+let add_operator (token_addr, token_id, owner, operator : address * nat * address * address) =
+    let contract = Option.unopt
+        (Tezos.get_entrypoint_opt "%update_operators" token_addr : T.fa2_update_operators_params contract option) in
+    Tezos.transaction [Add_operator { owner = owner ; operator = operator ; token_id = token_id }] 0mutez contract
+
+
+let remove_operator (token_addr, token_id, owner, operator : address * nat * address * address) =
+    let contract = Option.unopt
+        (Tezos.get_entrypoint_opt "%update_operators" token_addr : T.fa2_update_operators_params contract option) in
+    Tezos.transaction [Remove_operator { owner = owner ; operator = operator ; token_id = token_id }] 0mutez contract
+
+
+let approve (token_addr, spender, value : address * address * nat) =
+    let contract = Option.unopt
+        (Tezos.get_entrypoint_opt "%approve" token_addr : T.fa12_approve_params contract option) in
+    Tezos.transaction { spender = spender ; value = value } 0mutez contract
+
 
 #endif

@@ -2,14 +2,12 @@
 #define QUIPUSWAP
 
 type tez_to_token_param =
-[@layout:comb]
 {
     min_out : nat;
     receiver: address;
 }
 
 type token_to_tez_param =
-[@layout:comb]
 {
     amount: nat;
     min_out : nat;
