@@ -8,7 +8,7 @@ dotenv.load_dotenv()
 
 SHELL = "https://rpc.tzkt.io/hangzhou2net/"
 KEY_FILENAME = os.environ["KEY_FILENAME"]
-CONTRACT_ADDRESS = "KT1UxDNfsbkexUSP7NyrRVSBSsSWMoYPmPrf"
+CONTRACT_ADDRESS = "KT18q4si6YmzJjbgZ3wV7HYfds1E3EbD7tBx"
 
 client: PyTezosClient = pytezos.using(key=KEY_FILENAME, shell=SHELL)
 

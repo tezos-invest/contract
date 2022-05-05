@@ -36,7 +36,7 @@ if __name__ == "__main__":
     )
 
     initial_storage = {
-        "admin": "tz1LQjdKgiAsHkYMzBH2HFDcynf7QSd5Z4Eg",
+        "admin": client.key.public_key_hash(),
         "pending_admin": None,
         "portfolios": {},
         "balances": {},
@@ -46,8 +46,7 @@ if __name__ == "__main__":
         "pools": {},
     }
 
-    # contract.program.storage.from_python_object(initial_storage)
-    # exit()
+    contract.program.storage.from_python_object(initial_storage)
     op = contract.originate(initial_storage=initial_storage).send()
     print(f"Success: {op.hash()}")
     client.wait(op)
@@ -57,4 +56,4 @@ if __name__ == "__main__":
     op_result = opg["contents"][0]["metadata"]["operation_result"]
     address = op_result["originated_contracts"][0]
     print(f"Contract address: {address}")
-    # Contract address: KT1UxDNfsbkexUSP7NyrRVSBSsSWMoYPmPrf
+    # Contract address: KT18q4si6YmzJjbgZ3wV7HYfds1E3EbD7tBx
