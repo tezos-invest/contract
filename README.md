@@ -10,6 +10,7 @@ The project consists of:
  - [Smart contract](invest): implements methods for portfolio's creation, rebalancing and withdrawal
  - [Backend module](https://github.com/tezos-invest/etfs): provides portfolios' data, handles modelling and optimizations
  - Frontend: web UI and wallet integration via [Taquito](https://tezostaquito.io)  
+
 3rd-party dependencies:
  - Contract-level integration with [Quipuswap's](https://quipuswap.com) DEX for token trading
  - [TzKT](https://tzkt.io) indexer
