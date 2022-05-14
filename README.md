@@ -1,14 +1,14 @@
 # Tezos.Invest
 
-This is an MVP of a crypto assets management app that allows investors to store and automatically rebalance their portfolios fully on-chain.
+This is an MVP of a crypto assets management app that allows investors to store and automatically rebalance their portfolios
 
 ## Intro
 
-Asset allocation is a popular investment strategy that aims to balance risk and potentioal rewards by spreading investments across various assets. This is done by selecting a number of assets and their weights in a portfolio according to an individual's goals, risk tolerance, and investment horizon. Over time prices fluctuations can change the weightings of individual assets thus making the portfolio imbalanced. That is why a portfolio should be periodically rebalanced. Our app automates allocating tokens and rebalancing of a crypto portfolio and does this fully on-chain. 
+[Asset allocation](https://www.investopedia.com/terms/a/assetallocation.asp) is a popular investment strategy that aims to balance risk and potentioal rewards by spreading investments across various assets. This is done by selecting a number of assets and their weights in a portfolio according to an individual's goals, risk tolerance, and investment horizon. Over time prices fluctuations can change the weightings of individual assets thus making the portfolio imbalanced. That is why a portfolio should be periodically rebalanced. Our app automates allocating tokens and rebalancing of a crypto portfolio and does this fully on-chain. 
 
 The project consists of:
- - Smart contract: implements methods for portfolio's creation, rebalancing and withdrawal
- - Backend module: provides portfolios' data, handles modelling and optimizations
+ - [Smart contract](invest): implements methods for portfolio's creation, rebalancing and withdrawal
+ - [Backend module](https://github.com/tezos-invest/etfs): provides portfolios' data, handles modelling and optimizations
  - Frontend: web UI and wallet integration via [Taquito](https://tezostaquito.io)
 3rd-party dependencies:
  - Contract-level integration with [Quipuswap's](https://quipuswap.com) DEX for token trading
@@ -33,6 +33,13 @@ sequenceDiagram
     Contract ->>+ Quipuswap: Token swaps (sell)
     Quipuswap -->>- Client: XTZ
 ```
+
+## Platform architecture
+
+<p align="center">
+    <img src="doc/diagram.png">
+</p>
+
 
 Current implementation has a couple of quirks that will be eliminated in the future:
 - Quipuswap doesn't provide any on-chain way of retrieving current prices, so the caller of the contract should pass them as an argument
