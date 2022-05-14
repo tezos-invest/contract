@@ -37,7 +37,7 @@ sequenceDiagram
 ## Platform architecture
 
 <p align="center">
-    <img src="doc/diagram.png">
+    <img src="docs/diagram.png">
 </p>
 
 
