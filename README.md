@@ -36,16 +36,17 @@ sequenceDiagram
     Quipuswap -->>- Client: XTZ
 ```
 
+Current implementation has a couple of quirks that will be eliminated in the future:
+- Quipuswap doesn't provide any on-chain way of retrieving current prices, so the caller of the contract should pass them as an argument
+- When we buy tokens on a DEX we can't know the exact amount of tokens that will be received in advance due to price slippage. Therefore we track minimal guaranteed amounts of purchased tokens based on allowed slippage and ignore the remainders at the time of rebalancing. But these remainders are not lost - they are returned to the clients when they withdraw their funds
+
+
 ## Platform architecture
 
 <p align="center">
     <img src="docs/diagram.png">
 </p>
 
-
-Current implementation has a couple of quirks that will be eliminated in the future:
-- Quipuswap doesn't provide any on-chain way of retrieving current prices, so the caller of the contract should pass them as an argument
-- When we buy tokens on a DEX we can't know the exact amount of tokens that will be received in advance due to price slippage. Therefore we track minimal guaranteed amounts of purchased tokens based on allowed slippage and ignore the remainders at the time of rebalancing. But these remainders are not lost - they are returned to the clients when they withdraw their funds
 
 ## Future plans
 
