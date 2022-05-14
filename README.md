@@ -15,10 +15,11 @@ The project consists of:
  - Contract-level integration with [Quipuswap's](https://quipuswap.com) DEX for token trading
  - [TzKT](https://tzkt.io) indexer
 
-The user flow 
-- A user specifies their desired portfolio (a list of assets they want to invest in with their weights e.g. `{tzBTC: 50%, ETHtz: 30%, KUSD: 20%}`)
-- After portfolio is created a user can call `rebalance` method attaching desired amount of TEZ to transaction. This amount of TEZ will be spread accross portfolio's assets according to specified weights. To do so it makes use of current prices of the assets and a DEX exchange to make trades
-- A user can deposit more funds or withdraw them at any time. Adding funds as well as rebalancing is done via a single call to `rebalance` method.
+## User flow 
+
+1. A user specifies their desired portfolio (a list of assets they want to invest in with their weights e.g. `{tzBTC: 50%, ETHtz: 30%, KUSD: 20%}`)
+2. After portfolio is created a user can call `rebalance` method attaching desired amount of TEZ to transaction. This amount of TEZ will be spread accross portfolio's assets according to specified weights. To do so it makes use of current prices of the assets and a DEX exchange to make trades
+3. A user can deposit more funds or withdraw them at any time. Adding funds as well as rebalancing is done via a single call to `rebalance` method.
 
 ```mermaid
 sequenceDiagram
