@@ -13,7 +13,7 @@ The project consists of:
 
 3rd-party dependencies:
  - Contract-level integration with [Quipuswap's](https://quipuswap.com) DEX for token trading
- - [SpicySwap's] (https://spicyswap.xyz/) REST API for price history
+ - [SpicySwap's](https://spicyswap.xyz/) REST API for price history
  - [TzKT](https://tzkt.io) indexer
 
 ## User flow 
